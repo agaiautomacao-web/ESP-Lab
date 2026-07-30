@@ -125,7 +125,7 @@ o ESP Lab, monta um ambiente isolado e prepara tudo para rodar.
 **1. Baixe o instalador e execute-o** (com o Python do sistema):
 
 ```bash
-curl -O https://raw.githubusercontent.com/agaiautomacao-web/ESP-Lab/main/install.py
+curl -LO https://github.com/agaiautomacao-web/ESP-Lab/releases/latest/download/install.py
 python3 install.py
 ```
 
