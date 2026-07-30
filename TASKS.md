@@ -420,10 +420,10 @@ o **Adendo 1** (placas por MAC); os itens abaixo refletem o estado atual.
 - [x] Auditoria pré-público: `.gitignore` (`data/`, `workspace/`, `backups/`,
       `.old`, `__pycache__`, `_workbench/`, `config/`, `.claude/`), segredos,
       histórico recomeçado (sem MACs), caminhos absolutos.
-- [ ] Remover exigência de token do `install.py` (repo passa a público).
+- [x] `install.py` sem token (repo público); fallback para `main` quando não há release; confirmação antes de instalar.
 - [x] `config/` e `workspace/` sobem vazias (`.gitkeep`); sentinela
       `.esplab_root` presente na raiz (empacotamento final: @E12).
-- [ ] Subir ao GitHub público e validar instalação limpa pelo instalador.
+- [x] ESP Lab v1.0.0 no GitHub público; `curl` do `install.py` validado (baixa e roda); primeiro uso guiado.
 
 ### Fechamento v1.0.0 (Adendo 12 do PROJECT, 2026-07-29)
 - [x] `bump.py` (raiz): incremento SemVer manual-assistido, reusa
@@ -435,3 +435,13 @@ o **Adendo 1** (placas por MAC); os itens abaixo refletem o estado atual.
 - [x] Command palette em português (comandos, placeholder, tooltip, binding);
       "Screenshot" removido; `Ctrl+P` com `show=False` (sem duplicar no rodapé).
 - [x] ESC prioriza o painel de ajuda (1º fecha o painel, 2º age no menu).
+
+### Bootstrap do primeiro uso (Adendo 13 do PROJECT, 2026-07-30)
+- [x] `install.py` e `make_release.py` versionados no repositório público.
+- [x] `install.py`: fallback para o branch `main` sem release publicada.
+- [x] `install.py`: confirmação em instalação nova, avisando o que fará.
+- [x] README com o caminho real: baixar `install.py` (curl) → rodar →
+      `bash esplab.sh`; recuperação via `recover.py`; XDG corrigido.
+- [x] `curl` do raw do GitHub validado (baixa o `install.py`, 634 linhas).
+- [x] Confirmado: `paths.py` cria dirs de runtime sob demanda; `data/`,
+      `backups/`, `_workbench/` não versionados (recriáveis/pesados).

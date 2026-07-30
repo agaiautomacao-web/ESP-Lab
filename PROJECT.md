@@ -865,3 +865,47 @@ runtime (`config/`, `workspace/`, `backups/`, `data/`, `_workbench/`,
 `.claude/`); `config/` e `workspace/` sobem vazias (via `.gitkeep`). O
 histórico git local foi recomeçado para não carregar dados sensíveis
 (`boards_db.json` com MACs) de commits antigos. Remote público configurado.
+
+---
+
+### Adendo 13 — Bootstrap do primeiro uso e modelo de distribuição (2026-07-30)
+
+**Modelo de distribuição: `install.py` standalone.** A aplicação não é
+distribuída por `git clone`, mas por um instalador de arquivo único. O usuário
+baixa apenas o `install.py` (avulso, via `curl` do raw do GitHub) e o executa
+com o Python do sistema; ele baixa o repositório público, cria o `app-venv`
+isolado em `data/app-venv`, instala as dependências e gera o script de entrada
+`esplab.sh`. Rodar a aplicação é `bash esplab.sh` (que usa o Python do venv e
+põe `src/` no `PYTHONPATH`). O `install.py` e o `make_release.py` passaram a
+ser versionados — sem eles no repositório, o `curl` do README não teria de
+onde baixar e o primeiro uso ficaria impossível.
+
+**Recuperação (`recover.py`).** Quando o ambiente quebra (venv corrompido,
+dependência ausente), `python3 recover.py` reconstrói o `app-venv` reusando o
+`install.py`, preservando `config/`, `workspace/` e o restante de `data/`.
+Território 1 (o corpo da aplicação), coerente com o Adendo 5.
+
+**Diretórios criados sob demanda, não versionados.** `paths.py` cria os
+diretórios de runtime via `ensure_dirs()` (`config/`, `data/`, `logs/`,
+`run/`, `envs/`, `esp-idf/`, `workspace/`) no boot. Por isso `data/`,
+`backups/` e `_workbench/` não sobem ao repositório: são recriáveis e/ou
+pesados (venvs e ESP-IDF são específicos da máquina — caminhos absolutos
+embutidos não sobrevivem a outra instalação). O default é tudo dentro de
+`app_root` (isolamento total); XDG só se `XDG_CONFIG_HOME`/`XDG_DATA_HOME`
+estiverem definidos.
+
+**`install.py`: fallback para `main` e confirmação.** Sem `--branch`/
+`--version`, o instalador tentava a última release (GitHub Releases API); como
+pode não haver release publicada, isso abortava. Agora, na ausência de
+release, cai para o branch `main` (que sempre existe), avisando. Releases,
+quando existirem, mantêm prioridade. Além disso, numa instalação nova o
+`install.py` passou a **mostrar o que fará e pedir confirmação** antes de
+baixar/instalar — coerente com "nada age sozinho" (§5.13).
+
+**Publicar o ESP Lab vs. versionar projetos.** Registro de uma distinção que
+gerou confusão: o menu **Versionamento** da TUI versiona os **projetos ESP32
+do usuário** no workspace (opera em `self._projeto_ativo`), não o código do
+ESP Lab. Publicar o próprio ESP Lab é tarefa do autor, feita **apenas** pelo
+`publish.py` (o app não o invoca). São dois repositórios Git com propósitos
+distintos; um eventual atalho no app para publicar o ESP Lab seria item
+separado do "Commit" de projetos (decisão adiada).

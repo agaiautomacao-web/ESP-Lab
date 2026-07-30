@@ -232,3 +232,40 @@ constituir/reparar o corpo da app em plataformas novas com incompatibilidade.
 1. Reindexar (`git add -A`) e reconferir o portão antes do commit.
 2. Commit + push pela aplicação (Versionamento / `publish.py`).
 3. Validar instalação limpa pelo instalador em plataforma nova (@E12).
+
+---
+
+# Sessão 2026-07-30 — Bootstrap do primeiro uso (pós-v1.0.0)
+
+## Problema descoberto
+O ESP Lab publicado não tinha primeiro uso possível: `data/` não sobe (correto,
+é pesado/recriável), mas o `install.py` — motor do bootstrap, do qual o
+`recover.py` depende — **não estava versionado**. Quem clonasse/baixasse não
+tinha como erguer a aplicação.
+
+## Correções
+- **`install.py` e `make_release.py` versionados** (commit `5de31bb`).
+- **Fallback para `main`**: sem release publicada, o instalador baixa do branch
+  `main` em vez de abortar. Releases mantêm prioridade quando existirem.
+- **Confirmação em instalação nova**: mostra o que fará (baixar, criar venv
+  isolado, gerar `esplab.sh`) e pede `[s/N]` antes de agir.
+- **README**: seção de instalação reescrita — baixar `install.py` via `curl`,
+  rodar, abrir com `bash esplab.sh`; recuperação com `recover.py`; menção XDG
+  corrigida (default é tudo sob `~/esplab/`).
+
+## Validações
+- `install.py --help` e recusa de instalação nova (cancelamento limpo): OK.
+- Comportamento do fallback testado (sem release → `main`; com release →
+  release): OK.
+- `curl` do raw do GitHub baixou o `install.py` (634 linhas): OK.
+
+## Esclarecimentos de design
+- `paths.py` cria os diretórios de runtime sob demanda (`ensure_dirs`); por isso
+  `data/`, `backups/`, `_workbench/` não são versionados.
+- Menu Versionamento versiona **projetos do usuário**, não o ESP Lab; publicar
+  o ESP Lab é só via `publish.py`.
+
+## Próximos passos
+- (opcional) Atalho no app para publicar o próprio ESP Lab (item separado do
+  "Commit" de projetos).
+- @E12: empacotamento/instalador — limpeza de `.old`, sentinela no pacote.
