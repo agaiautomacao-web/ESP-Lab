@@ -48,3 +48,6 @@ venv/
 
 # --- Config local da ferramenta Claude (nao faz parte do projeto)
 .claude/
+
+# --- Artefatos de build (release ZIP; vao para a Release, nao para o repo)
+dist/

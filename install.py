@@ -251,7 +251,11 @@ def instalar(dest: Path, raiz_extraida: Path) -> dict:
     info(f"Destino: {dest}")
 
     # 2. Copiar arquivos do pacote (src/, VERSION, requirements-app.txt, .esplab_root)
-    itens_para_copiar = ["src", "VERSION", "requirements-app.txt", SENTINEL_FILE]
+    itens_para_copiar = [
+        "src", "VERSION", "requirements-app.txt", SENTINEL_FILE,
+        "recover.py", "install.py",
+        "README.md", "PROJECT.md", "TASKS.md",
+    ]
     for item in itens_para_copiar:
         origem = raiz_extraida / item
         if not origem.exists():

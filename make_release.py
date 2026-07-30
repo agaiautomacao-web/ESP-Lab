@@ -42,6 +42,11 @@ INCLUIR = [
     "VERSION",
     "requirements-app.txt",
     "src",
+    "recover.py",
+    "install.py",
+    "README.md",
+    "PROJECT.md",
+    "TASKS.md",
 ]
 
 # Padroes de exclusao (nome do arquivo ou sufixo)
