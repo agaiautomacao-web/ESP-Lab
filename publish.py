@@ -40,6 +40,9 @@ def main() -> int:
     parser.add_argument("--branch", help="branch a subir (padrão: o atual)")
     parser.add_argument("--force", action="store_true",
                         help="sobrescreve o remote (use na 1ª consolidação)")
+    parser.add_argument("--rm-tag", dest="rm_tag", default="v0.1.0",
+                        help="remove esta tag do remote apos o push "
+                             "(padrao: v0.1.0; use vazio para nenhuma)")
     args = parser.parse_args()
 
     if not (ROOT / ".git").is_dir():
@@ -97,6 +100,28 @@ def main() -> int:
         if args.force:
             push_cmd.insert(-1, "--force")
         r = subprocess.run(push_cmd, env=env, text=True)
+
+        # Remocao de tag orfa na MESMA sessao autenticada (so se o push
+        # do branch deu certo). Tolerante: tag inexistente nao e erro.
+        tag = (args.rm_tag or "").strip()
+        if r.returncode == 0 and tag:
+            print(f"Removendo tag orfa do remote: {tag} ...")
+            rt = subprocess.run(
+                ["git", "-C", str(ROOT), "push", "origin",
+                 f":refs/tags/{tag}"],
+                env=env, text=True, capture_output=True,
+            )
+            saida = (rt.stdout or "") + (rt.stderr or "")
+            if rt.returncode == 0:
+                print(f"  tag {tag} removida do remote.")
+            elif ("does not exist" in saida
+                  or "nao existe" in saida
+                  or "não existe" in saida
+                  or "remote ref does not exist" in saida):
+                print(f"  tag {tag} nao existe no remote (nada a remover).")
+            else:
+                print(f"  [aviso] nao consegui remover a tag {tag}:")
+                print("  " + saida.strip())
     finally:
         try:
             os.unlink(ask.name)

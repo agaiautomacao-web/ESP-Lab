@@ -119,17 +119,49 @@ apenas aos comandos necessários, com seu consentimento explícito.
 
 ## Instalação
 
-A aplicação inclui **instalador e desinstalador** reversíveis. O instalador
-registra um manifesto de tudo que toca; o desinstalador remove ambientes,
-configurações, a regra sudoers (se criada) e symlinks, sem deixar resíduo.
+Você precisa de **um único arquivo** para instalar: o `install.py`. Ele baixa
+o ESP Lab, monta um ambiente isolado e prepara tudo para rodar.
 
-Os diretórios seguem o padrão XDG (`~/.config/esplab/`,
-`~/.local/share/esplab/`); o workspace de projetos fica onde você escolher. A
-aplicação não toca pastas do sistema, com a única exceção da regra sudoers
-opcional.
+**1. Baixe o instalador e execute-o** (com o Python do sistema):
 
-> Instruções detalhadas de instalação serão adicionadas conforme a
-> implementação avança.
+```bash
+curl -O https://raw.githubusercontent.com/agaiautomacao-web/ESP-Lab/main/install.py
+python3 install.py
+```
+
+O instalador **mostra o que vai fazer e pede confirmação** antes de agir:
+baixa o ESP Lab do GitHub, cria um ambiente virtual isolado em
+`~/esplab/data/app-venv` e gera o script de inicialização (`esplab.sh`).
+**Nada fora de `~/esplab/` é modificado** — exceto a regra `sudoers` opcional,
+criada só com o seu consentimento explícito.
+
+**2. Abra o ESP Lab:**
+
+```bash
+bash ~/esplab/esplab.sh
+```
+
+Por padrão, tudo vive dentro de `~/esplab/` (código, `config/`, `data/`,
+`workspace/`) — isolamento total. Se preferir os diretórios XDG
+(`~/.config/esplab/`, `~/.local/share/esplab/`), defina `XDG_CONFIG_HOME` /
+`XDG_DATA_HOME` antes de instalar.
+
+### Se a aplicação não abrir
+
+Ambientes virtuais podem quebrar (uma atualização de sistema, uma dependência
+corrompida). Para reconstruir o ambiente **sem reinstalar do zero**,
+preservando `config/`, `workspace/` e seus dados:
+
+```bash
+python3 ~/esplab/recover.py
+```
+
+### Atualizar ou remover
+
+```bash
+python3 ~/esplab/install.py --update      # atualiza a instalação existente
+python3 ~/esplab/install.py --uninstall   # remove a instalação
+```
 
 ---
 
