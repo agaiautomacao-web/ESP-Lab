@@ -1,0 +1,6 @@
+# Dependencias da APLICACAO ESP Lab (a ferramenta em si).
+# Instaladas no venv proprio da aplicacao (app-venv), isolado do sistema.
+# Distinto das dependencias de cada ESP-IDF (essas vivem nos venvs por versao).
+textual
+pyserial
+PyYAML

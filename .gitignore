@@ -1,0 +1,50 @@
+# ESP Lab — .gitignore
+#
+# Regra geral: nada gerado em runtime pela aplicacao sobe ao repo.
+# A fronteira de caminhos e o paths.py; os diretorios abaixo sao
+# exatamente os que a app cria/escreve.
+
+# --- Dados pesados do usuario (venvs, ESP-IDF, idf-tools, logs, run, app-venv)
+data/
+
+# --- Backups da aplicacao (backups/<timestamp>/...)
+backups/
+
+# --- Area de manutencao/dev (patches, arquivos mortos)
+_workbench/
+_archive/
+
+# --- Diagnostico bruto do scan
+diag/raw_*/
+
+# --- Config do usuario: ignora conteudo, preserva a pasta vazia
+#     (boards_db.json tem MACs; monitor.json, port_configs.json,
+#      workspace.json, editor_config.json, compat_matrix.yml sao runtime.
+#      A semente de compat_matrix vive em src/esplab/software/data/.)
+config/*
+!config/.gitkeep
+
+# --- Workspace de projetos do usuario: ignora conteudo, preserva pasta vazia
+workspace/*
+!workspace/.gitkeep
+
+# (redundante com workspace/* acima, mantido por clareza de intencao)
+workspace/*/build/
+workspace/*/managed_components/
+
+# --- Backups por-arquivo e temporarios de edicao
+*.old
+*.orig
+*~
+.esplab_backups_*.tar.gz
+
+# --- Python
+__pycache__/
+*.pyc
+
+# --- Ambientes virtuais avulsos
+.venv/
+venv/
+
+# --- Config local da ferramenta Claude (nao faz parte do projeto)
+.claude/
